@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>CD EXAM</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <!-- <link rel="stylesheet" type="text/css" media="screen" href="main.css" /> -->
+        <!-- <script src="main.js"></script> -->
+    </head>
+    <body>
+        <a href="{% url 'my_app:logOut' %}">Click here to logout</a> 
+        <h1>Hello, {{user.firstName}}</h1>  
+        <h1>Your Wish List</h1>
+        <h3>  (click on the item to Display it)  </h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>ITEM </th>  
+                    <th>DATE ADDED</th>
+                    <th>ADDED BY</th>
+                    <th>ACTIONS</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for addition in myItems %}
+                <tr>
+                    <td><a href="{% url 'my_app:toItems' id=addition.item.id %}">{{addition.item.itemName}}</a></td>
+                    <td>{{addition.item.created_at}}</td>
+                    <td>{{addition.item.creator.firstName}}
+                    {%  if addition.item.creator.id == user.id %}
+                        <td><a href="{% url 'my_app:deleteFromD' id=addition.item.id %}">Delete Item</a></td>
+                    {% else %}
+                        <td><a href="{% url 'my_app:deleteItem' item_id=addition.item.id %}">Remove from my Wishlist </a></td>
+                    {% endif %}
+
+                </tr>
+            </tbody>
+            {% endfor %}
+        </table>
+        <h1>Other User's Wish List</h1>
+        <form action="/addItem" method='POST'>
+        {% csrf_token %}
+            <input type="text" name="itemName" value="" class="">
+            <input type="submit" name="submit" value="Add Item" class="">
+        </form>
+        
+        {% for message in messages%}
+            <p>   {{message}} </p>
+        {% endfor %}
+        
+
+        <h3>  (click on the item to add to your Wishlist)  </h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Item </th>  
+                    <th>DATE ADDED</th>
+                    <th>ADDED BY</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                {% for item in items %}
+                    <td><a href="{% url 'my_app:addToMyItem' item_id=item.id %}">{{item.itemName}}</a></td>
+                    <td>{{item.created_at}}</td>
+                    <td>{{ item.creator.firstName}}</td>               
+                </tr>
+            </tbody>
+                {% endfor %}
+        </table>    
+    </body>
+</html>
