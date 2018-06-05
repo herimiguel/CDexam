@@ -15,6 +15,7 @@ def register(request):
         lastName= request.POST['lastName']
         email= request.POST['email']
         password= request.POST['password']
+        conPassword= request.POST['conPassword']
         isValid=True
         minVal= 3
         maxVP= 8
@@ -33,10 +34,9 @@ def register(request):
     if len(request.POST['password']) < minVal:
         messages.error(request, 'Password is required!')
         isValid = False
-    if request.POST['conPassword'] != request.POST['conPassword']:
+    if request.POST['conPassword'] != password:
         messages.error(request, 'Password confirmation failed!')
         isValid = False
-
     if not isValid:
         return redirect('/')
 
@@ -94,6 +94,7 @@ def viewItems(request):
         'user': User.objects.get(id=request.session['user.id'])
     }
     return render(request, 'my_app/success.html', context)
+    # return render(request, 'my_app/success.html', context)
 
 def logOut(request):
     request.session.clear()
